@@ -1,0 +1,16 @@
+{
+  "id": "peter-rabbit",
+  "title": "The Tale of Peter Rabbit",
+  "author": "Beatrix Potter",
+  "description": "A classic children's story about a mischievous rabbit who disobeys his mother and ventures into Mr. McGregor's garden.",
+  "coverImage": "/images/peter-rabbit/cover.jpg",
+  "totalPages": 12,
+  "version": "1.0.0",
+  "replaceable": true,
+  "metadata": {
+    "genre": "Children's Literature",
+    "publicDomain": true,
+    "copyright": "Public Domain (1902)",
+    "year": "1902"
+  }
+}

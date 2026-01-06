@@ -1,0 +1,100 @@
+[
+  {
+    "pageNumber": 0,
+    "type": "cover",
+    "template": "CoverPage",
+    "content": {
+      "title": "The Tale of Peter Rabbit",
+      "author": "Beatrix Potter",
+      "subtitle": "A Classic Children's Story"
+    }
+  },
+  {
+    "pageNumber": 1,
+    "type": "text",
+    "template": "TextPage",
+    "content": {
+      "text": "Once upon a time there were four little Rabbits, and their names were—Flopsy, Mopsy, Cotton-tail, and Peter. They lived with their Mother in a sand-bank, underneath the root of a very big fir-tree."
+    }
+  },
+  {
+    "pageNumber": 2,
+    "type": "text",
+    "template": "TextPage",
+    "content": {
+      "text": "'Now my dears,' said old Mrs. Rabbit one morning, 'you may go into the fields or down the lane, but don't go into Mr. McGregor's garden: your Father had an accident there; he was put in a pie by Mrs. McGregor.'"
+    }
+  },
+  {
+    "pageNumber": 3,
+    "type": "text",
+    "template": "TextPage",
+    "content": {
+      "text": "'Now run along, and don't get into mischief. I am going out.'\n\nThen old Mrs. Rabbit took a basket and her umbrella, and went through the wood to the baker's. She bought a loaf of brown bread and five currant buns."
+    }
+  },
+  {
+    "pageNumber": 4,
+    "type": "text",
+    "template": "TextPage",
+    "content": {
+      "text": "Flopsy, Mopsy, and Cotton-tail, who were good little bunnies, went down the lane to gather blackberries.\n\nBut Peter, who was very naughty, ran straight away to Mr. McGregor's garden, and squeezed under the gate!"
+    }
+  },
+  {
+    "pageNumber": 5,
+    "type": "text",
+    "template": "TextPage",
+    "content": {
+      "text": "First he ate some lettuces and some French beans; and then he ate some radishes; And then, feeling rather sick, he went to look for some parsley."
+    }
+  },
+  {
+    "pageNumber": 6,
+    "type": "text",
+    "template": "TextPage",
+    "content": {
+      "text": "But round the end of a cucumber frame, whom should he meet but Mr. McGregor!\n\nMr. McGregor was on his hands and knees planting out young cabbages, but he jumped up and ran after Peter, waving a rake and calling out, 'Stop thief!'"
+    }
+  },
+  {
+    "pageNumber": 7,
+    "type": "text",
+    "template": "TextPage",
+    "content": {
+      "text": "Peter was most dreadfully frightened; he rushed all over the garden, for he had forgotten the way back to the gate.\n\nHe lost one of his shoes among the cabbages, and the other shoe amongst the potatoes."
+    }
+  },
+  {
+    "pageNumber": 8,
+    "type": "text",
+    "template": "TextPage",
+    "content": {
+      "text": "After losing them, he ran on four legs and went faster, so that I think he might have got away altogether if he had not unfortunately run into a gooseberry net, and got caught by the large buttons on his jacket."
+    }
+  },
+  {
+    "pageNumber": 9,
+    "type": "text",
+    "template": "TextPage",
+    "content": {
+      "text": "Peter gave himself up for lost, and shed big tears; but his sobs were overheard by some friendly sparrows, who flew to him in great excitement, and implored him to exert himself."
+    }
+  },
+  {
+    "pageNumber": 10,
+    "type": "text",
+    "template": "TextPage",
+    "content": {
+      "text": "Mr. McGregor came up with a sieve, which he intended to pop upon the top of Peter; but Peter wriggled out just in time, leaving his jacket behind him. And rushed into the tool-shed, and jumped into a can. It would have been a beautiful thing to hide in, if it had not had so much water in it."
+    }
+  },
+  {
+    "pageNumber": 11,
+    "type": "text",
+    "template": "TextPage",
+    "content": {
+      "text": "Peter got down very quietly off the wheelbarrow, and started running as fast as he could go, along a straight walk behind some black-currant bushes.\n\nMr. McGregor caught sight of him at the corner, but Peter did not care. He slipped underneath the gate, and was safe at last in the wood outside the garden.\n\nThe End"
+    }
+  }
+]
