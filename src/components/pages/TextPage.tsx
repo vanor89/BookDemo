@@ -3,8 +3,8 @@ import type { PageComponentProps } from "@/types/page";
 
 export default function TextPage({ content }: PageComponentProps) {
   return (
-    <div className="flex flex-col h-full p-[0.75em] overflow-hidden">
-      <div className="flex-1 min-h-0 overflow-auto">
+    <div className="flex flex-col justify-center h-full p-[1em] overflow-hidden">
+      <div className="overflow-auto max-h-full">
         {content.title && (
           <h2 className="text-[1.4em] font-heading font-bold text-gray-800 mb-[0.5em]">
             {content.title}
