@@ -19,7 +19,6 @@ export default function BookContainer({ children, className }: BookContainerProp
   const [isSinglePage, setIsSinglePage] = useState(true);
   const [isClient, setIsClient] = useState(false);
 
-  const childArray = React.Children.toArray(children);
 
   // Set client flag on mount
   useEffect(() => {
@@ -158,7 +157,7 @@ export default function BookContainer({ children, className }: BookContainerProp
     );
   }
 
-  // Single page mode: simple slide-based navigation
+  // Single page mode: use HTMLFlipBook in portrait mode
   if (isSinglePage) {
     return (
       <div
@@ -168,29 +167,36 @@ export default function BookContainer({ children, className }: BookContainerProp
           className
         )}
       >
-        <div
-          className="relative overflow-hidden rounded-lg shadow-2xl bg-white"
-          style={{
-            width: dimensions.width,
-            height: dimensions.height,
-          }}
+        <HTMLFlipBook
+          key={`book-single-${dimensions.width}-${dimensions.height}`}
+          ref={bookRef}
+          width={dimensions.width}
+          height={dimensions.height}
+          size="stretch"
+          minWidth={100}
+          maxWidth={800}
+          minHeight={140}
+          maxHeight={1200}
+          drawShadow={true}
+          flippingTime={BOOK_CONFIG.flippingTime}
+          usePortrait={true}
+          startPage={0}
+          startZIndex={0}
+          autoSize={true}
+          maxShadowOpacity={BOOK_CONFIG.maxShadowOpacity}
+          showCover={true}
+          mobileScrollSupport={true}
+          onFlip={handleFlip}
+          className="shadow-book"
+          style={{}}
+          clickEventForward={true}
+          useMouseEvents={true}
+          swipeDistance={BOOK_CONFIG.swipeDistance}
+          showPageCorners={true}
+          disableFlipByClick={!isFlippingEnabled}
         >
-          {childArray.map((child, index) => (
-            <div
-              key={index}
-              className={cn(
-                "absolute inset-0 transition-all duration-500 ease-in-out",
-                index === currentPage
-                  ? "opacity-100 translate-x-0"
-                  : index < currentPage
-                  ? "opacity-0 -translate-x-full"
-                  : "opacity-0 translate-x-full"
-              )}
-            >
-              {child}
-            </div>
-          ))}
-        </div>
+          {children}
+        </HTMLFlipBook>
       </div>
     );
   }
@@ -205,21 +211,21 @@ export default function BookContainer({ children, className }: BookContainerProp
       )}
     >
       <HTMLFlipBook
-        key={`book-${dimensions.width}-${dimensions.height}`}
+        key={`book-double-${dimensions.width}-${dimensions.height}`}
         ref={bookRef}
         width={dimensions.width}
         height={dimensions.height}
-        size="fixed"
-        minWidth={BOOK_CONFIG.minWidth}
-        maxWidth={BOOK_CONFIG.maxWidth}
-        minHeight={BOOK_CONFIG.minHeight}
-        maxHeight={BOOK_CONFIG.maxHeight}
+        size="stretch"
+        minWidth={100}
+        maxWidth={800}
+        minHeight={140}
+        maxHeight={1200}
         drawShadow={true}
         flippingTime={BOOK_CONFIG.flippingTime}
         usePortrait={false}
         startPage={0}
         startZIndex={0}
-        autoSize={false}
+        autoSize={true}
         maxShadowOpacity={BOOK_CONFIG.maxShadowOpacity}
         showCover={true}
         mobileScrollSupport={true}
