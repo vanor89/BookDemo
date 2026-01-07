@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useBookNavigation } from "@/hooks/useBookNavigation";
 import { cn } from "@/lib/utils";
 
@@ -11,11 +11,26 @@ interface BookControlsProps {
 export default function BookControls({ className }: BookControlsProps) {
   const { currentPage, totalPages, nextPage, previousPage, canGoNext, canGoPrevious, progress } =
     useBookNavigation();
+  const [isHidden, setIsHidden] = useState(false);
+
+  useEffect(() => {
+    const checkHeight = () => {
+      setIsHidden(window.innerHeight < 350);
+    };
+
+    checkHeight();
+    window.addEventListener("resize", checkHeight);
+    return () => window.removeEventListener("resize", checkHeight);
+  }, []);
+
+  if (isHidden) {
+    return null;
+  }
 
   return (
     <div
       className={cn(
-        "flex-shrink-0 py-3 px-4",
+        "flex-shrink-0 py-2 px-4",
         "flex items-center justify-center",
         "bg-white/90 backdrop-blur-sm",
         "border-t border-gray-200",

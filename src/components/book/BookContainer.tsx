@@ -14,6 +14,7 @@ interface BookContainerProps {
 export default function BookContainer({ children, className }: BookContainerProps) {
   const { currentPage, goToPage, isFlippingEnabled, setPagesPerView } = useBook();
   const bookRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 400, height: 600 });
   const [isSinglePage, setIsSinglePage] = useState(true);
   const [isClient, setIsClient] = useState(false);
@@ -40,38 +41,60 @@ export default function BookContainer({ children, className }: BookContainerProp
       const aspectRatio = width / height;
 
       // Determine single vs double page
-      const shouldBeSinglePage = width < 1100 || aspectRatio < 1.3;
+      const isLandscape = aspectRatio >= 1.3;
+      const isWideEnoughForDouble = width >= 640;
+      const shouldBeSinglePage = !(isLandscape && isWideEnoughForDouble);
+
       setIsSinglePage(shouldBeSinglePage);
 
-      const availableWidth = width * 0.9;
-      const availableHeight = height * 0.7;
-      const pageAspectRatio = 0.7;
+      // Get actual container dimensions if available
+      let availableWidth: number;
+      let availableHeight: number;
+
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        availableWidth = rect.width - 16; // small padding
+        availableHeight = rect.height - 16;
+      } else {
+        // Fallback: estimate based on viewport
+        const headerHeight = 50;
+        const footerHeight = height < 350 ? 0 : 60;
+        availableWidth = width - 32;
+        availableHeight = height - headerHeight - footerHeight - 32;
+      }
+
+      const pageAspectRatio = 0.7; // width/height ratio
 
       let pageWidth: number;
       let pageHeight: number;
 
       if (shouldBeSinglePage) {
-        pageHeight = availableHeight * 0.95;
+        // Start with max height that fits
+        pageHeight = availableHeight;
         pageWidth = pageHeight * pageAspectRatio;
 
-        if (pageWidth > availableWidth * 0.9) {
-          pageWidth = availableWidth * 0.9;
+        // If too wide, constrain by width
+        if (pageWidth > availableWidth) {
+          pageWidth = availableWidth;
           pageHeight = pageWidth / pageAspectRatio;
         }
       } else {
-        pageHeight = availableHeight * 0.95;
-        const totalWidth = pageHeight * pageAspectRatio * 2;
+        // Double page: need to fit 2 pages side by side
+        pageHeight = availableHeight;
+        const totalWidthNeeded = pageHeight * pageAspectRatio * 2;
 
-        if (totalWidth > availableWidth * 0.95) {
-          pageWidth = (availableWidth * 0.95) / 2;
+        // If total width exceeds available, constrain by width
+        if (totalWidthNeeded > availableWidth) {
+          pageWidth = availableWidth / 2;
           pageHeight = pageWidth / pageAspectRatio;
         } else {
           pageWidth = pageHeight * pageAspectRatio;
         }
       }
 
-      pageWidth = Math.max(BOOK_CONFIG.minWidth, Math.min(pageWidth, BOOK_CONFIG.maxWidth));
-      pageHeight = Math.max(BOOK_CONFIG.minHeight, Math.min(pageHeight, BOOK_CONFIG.maxHeight));
+      // Ensure positive dimensions
+      pageWidth = Math.max(100, pageWidth);
+      pageHeight = Math.max(140, pageHeight);
 
       setDimensions({
         width: Math.floor(pageWidth),
@@ -79,10 +102,30 @@ export default function BookContainer({ children, className }: BookContainerProp
       });
     };
 
+    // Initial calculation
     calculate();
+
+    // Recalculate after a brief delay to ensure container is rendered
+    const timeoutId = setTimeout(calculate, 100);
+
+    // Recalculate on resize
     window.addEventListener("resize", calculate);
-    return () => window.removeEventListener("resize", calculate);
-  }, []);
+    window.addEventListener("orientationchange", calculate);
+
+    // Use ResizeObserver for container size changes
+    let resizeObserver: ResizeObserver | null = null;
+    if (containerRef.current) {
+      resizeObserver = new ResizeObserver(calculate);
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener("resize", calculate);
+      window.removeEventListener("orientationchange", calculate);
+      resizeObserver?.disconnect();
+    };
+  }, [isClient]); // Re-run when client is ready
 
   // Sync page changes from context to book (only for double-page mode)
   useEffect(() => {
@@ -106,7 +149,7 @@ export default function BookContainer({ children, className }: BookContainerProp
 
   if (!isClient) {
     return (
-      <div className="flex items-center justify-center w-full h-full">
+      <div ref={containerRef} className="flex items-center justify-center w-full h-full">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-book-accent mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading book...</p>
@@ -119,8 +162,9 @@ export default function BookContainer({ children, className }: BookContainerProp
   if (isSinglePage) {
     return (
       <div
+        ref={containerRef}
         className={cn(
-          "book-container flex items-center justify-center w-full h-full",
+          "book-container flex items-center justify-center w-full h-full overflow-hidden",
           className
         )}
       >
@@ -154,8 +198,9 @@ export default function BookContainer({ children, className }: BookContainerProp
   // Double page mode: use HTMLFlipBook
   return (
     <div
+      ref={containerRef}
       className={cn(
-        "book-container flex items-center justify-center w-full h-full",
+        "book-container flex items-center justify-center w-full h-full overflow-hidden",
         className
       )}
     >

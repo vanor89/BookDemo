@@ -16,15 +16,17 @@ const Page = forwardRef<HTMLDivElement, PageProps>(
           "book-page",
           "relative w-full h-full overflow-hidden",
           "bg-book-page",
-          "flex flex-col",
           className
         )}
         data-page-number={pageNumber}
       >
-        {children}
+        {/* Scalable content wrapper */}
+        <div className="w-full h-full flex flex-col page-content-scale">
+          {children}
+        </div>
 
         {/* Page number footer */}
-        <div className="absolute bottom-4 right-4 text-xs text-gray-400 font-serif">
+        <div className="absolute bottom-2 right-2 text-[0.6em] text-gray-400 font-serif">
           {pageNumber > 0 && pageNumber}
         </div>
       </div>

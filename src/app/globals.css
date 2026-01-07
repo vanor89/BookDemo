@@ -32,10 +32,56 @@
 .book-page {
   background-color: theme('colors.book.page');
   box-shadow: theme('boxShadow.page');
+  container-type: size;
+  container-name: page;
 }
 
 .book-container {
   perspective: 2000px;
+}
+
+/* Scale page content based on container size */
+.page-content-scale {
+  /* Base font size scales with container height */
+  font-size: clamp(6px, 2cqh, 16px);
+  overflow: hidden;
+}
+
+/* Responsive text sizes within pages using container query units */
+@container page (max-height: 250px) {
+  .page-content-scale {
+    font-size: 6px;
+  }
+}
+
+@container page (min-height: 250px) and (max-height: 350px) {
+  .page-content-scale {
+    font-size: 8px;
+  }
+}
+
+@container page (min-height: 350px) and (max-height: 450px) {
+  .page-content-scale {
+    font-size: 10px;
+  }
+}
+
+@container page (min-height: 450px) and (max-height: 550px) {
+  .page-content-scale {
+    font-size: 12px;
+  }
+}
+
+@container page (min-height: 550px) {
+  .page-content-scale {
+    font-size: 14px;
+  }
+}
+
+@container page (min-height: 700px) {
+  .page-content-scale {
+    font-size: 16px;
+  }
 }
 
 
