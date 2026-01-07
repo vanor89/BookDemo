@@ -1,4 +1,5 @@
-import type { BookConfig, PageData } from "@/types/page";
+import type { BookConfig } from "@/types/book";
+import type { PageData } from "@/types/page";
 
 export const SCHEMA_VERSION = "1.0.0";
 

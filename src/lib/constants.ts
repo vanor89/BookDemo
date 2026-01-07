@@ -4,10 +4,6 @@ export const BREAKPOINTS = {
 } as const;
 
 export const BOOK_CONFIG = {
-  minWidth: 200,
-  maxWidth: 1200,
-  minHeight: 280,
-  maxHeight: 1600,
   flippingTime: 800,
   swipeDistance: 50,
   maxShadowOpacity: 0.5,
