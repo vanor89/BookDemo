@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { BookProvider } from "@/context/BookContext";
 import BookContainer from "@/components/book/BookContainer";
 import BookControls from "@/components/book/BookControls";
@@ -12,7 +12,7 @@ import Link from "next/link";
 import bookConfig from "@/data/books/peter-rabbit/config.json";
 import pagesData from "@/data/books/peter-rabbit/pages.json";
 
-export default function BookPage() {
+function BookContent() {
   const config = bookConfig as BookConfig;
   const pages = pagesData as PageData[];
 
@@ -67,3 +67,16 @@ export default function BookPage() {
     </BookProvider>
   );
 }
+
+export default function BookPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-book-accent"></div>
+      </div>
+    }>
+      <BookContent />
+    </Suspense>
+  );
+}
+
