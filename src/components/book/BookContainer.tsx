@@ -17,22 +17,20 @@ export default function BookContainer({ children, className }: BookContainerProp
   const [isSinglePage, setIsSinglePage] = useState(true);
   const [isClient, setIsClient] = useState(false);
 
-  // Set client flag on mount
+  // Set client flag and determine page mode on mount
   useEffect(() => {
     setIsClient(true);
-  }, []);
-
-  // Determine single vs double page mode based on screen size
-  useEffect(() => {
-    if (typeof window === "undefined") return;
 
     const updatePageMode = () => {
       const width = window.innerWidth;
-      const aspectRatio = width / window.innerHeight;
+      const height = window.innerHeight;
+      const isLandscape = width > height;
+      const isWideEnough = width >= 640;
 
-      // Double page when landscape (aspect ratio >= 1.3) and wide enough (>= 640px)
-      const shouldBeSinglePage = !(aspectRatio >= 1.3 && width >= 640);
-      setIsSinglePage(shouldBeSinglePage);
+      // Double page only when: landscape AND wide enough
+      // Single page (portrait mode) for everything else
+      const shouldBeDoublePage = isLandscape && isWideEnough;
+      setIsSinglePage(!shouldBeDoublePage);
     };
 
     updatePageMode();
@@ -88,36 +86,44 @@ export default function BookContainer({ children, className }: BookContainerProp
         className
       )}
     >
-      <HTMLFlipBook
-        key={`book-${isSinglePage ? "single" : "double"}`}
-        ref={bookRef}
-        width={300}
-        height={400}
-        size="stretch"
-        minWidth={100}
-        maxWidth={1000}
-        minHeight={140}
-        maxHeight={1400}
-        drawShadow={true}
-        flippingTime={BOOK_CONFIG.flippingTime}
-        usePortrait={isSinglePage}
-        startPage={0}
-        startZIndex={0}
-        autoSize={true}
-        maxShadowOpacity={BOOK_CONFIG.maxShadowOpacity}
-        showCover={true}
-        mobileScrollSupport={true}
-        onFlip={handleFlip}
-        className="shadow-book"
-        style={{}}
-        clickEventForward={true}
-        useMouseEvents={true}
-        swipeDistance={BOOK_CONFIG.swipeDistance}
-        showPageCorners={true}
-        disableFlipByClick={!isFlippingEnabled}
+      <div
+        className="h-full flex items-center justify-center"
+        style={{
+          width: isSinglePage ? 'min(100%, 500px)' : '100%',
+          maxWidth: '100%'
+        }}
       >
-        {children}
-      </HTMLFlipBook>
+        <HTMLFlipBook
+          key={`book-${isSinglePage ? "portrait" : "landscape"}`}
+          ref={bookRef}
+          width={isSinglePage ? 300 : 400}
+          height={isSinglePage ? 450 : 500}
+          size={isSinglePage ? "fixed" : "stretch"}
+          minWidth={100}
+          maxWidth={isSinglePage ? 500 : 1000}
+          minHeight={140}
+          maxHeight={1400}
+          drawShadow={true}
+          flippingTime={BOOK_CONFIG.flippingTime}
+          usePortrait={isSinglePage}
+          startPage={0}
+          startZIndex={0}
+          autoSize={!isSinglePage}
+          maxShadowOpacity={BOOK_CONFIG.maxShadowOpacity}
+          showCover={true}
+          mobileScrollSupport={true}
+          onFlip={handleFlip}
+          className="shadow-book"
+          style={{}}
+          clickEventForward={true}
+          useMouseEvents={true}
+          swipeDistance={BOOK_CONFIG.swipeDistance}
+          showPageCorners={true}
+          disableFlipByClick={!isFlippingEnabled}
+        >
+          {children}
+        </HTMLFlipBook>
+      </div>
     </div>
   );
 }

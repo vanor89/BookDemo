@@ -11,9 +11,11 @@
   },
   {
     "pageNumber": 1,
-    "type": "text",
-    "template": "TextPage",
+    "type": "image-text",
+    "template": "ImageTextPage",
     "content": {
+      "image": "https://picsum.photos/seed/rabbit1/400/300",
+      "title": "The Rabbit Family",
       "text": "Once upon a time there were four little Rabbits, and their names were—Flopsy, Mopsy, Cotton-tail, and Peter. They lived with their Mother in a sand-bank, underneath the root of a very big fir-tree."
     }
   },
@@ -27,18 +29,22 @@
   },
   {
     "pageNumber": 3,
-    "type": "text",
-    "template": "TextPage",
+    "type": "image-text",
+    "template": "ImageTextPage",
     "content": {
-      "text": "'Now run along, and don't get into mischief. I am going out.'\n\nThen old Mrs. Rabbit took a basket and her umbrella, and went through the wood to the baker's. She bought a loaf of brown bread and five currant buns."
+      "image": "https://picsum.photos/seed/rabbit2/400/300",
+      "title": "Off to the Baker's",
+      "text": "'Now run along, and don't get into mischief. I am going out.'\n\nThen old Mrs. Rabbit took a basket and her umbrella, and went through the wood to the baker's."
     }
   },
   {
     "pageNumber": 4,
-    "type": "text",
-    "template": "TextPage",
+    "type": "image-text",
+    "template": "ImageTextPage",
     "content": {
-      "text": "Flopsy, Mopsy, and Cotton-tail, who were good little bunnies, went down the lane to gather blackberries.\n\nBut Peter, who was very naughty, ran straight away to Mr. McGregor's garden, and squeezed under the gate!"
+      "image": "https://picsum.photos/seed/garden1/400/300",
+      "title": "Mr. McGregor's Garden",
+      "text": "But Peter, who was very naughty, ran straight away to Mr. McGregor's garden, and squeezed under the gate!"
     }
   },
   {
@@ -51,10 +57,12 @@
   },
   {
     "pageNumber": 6,
-    "type": "text",
-    "template": "TextPage",
+    "type": "image-text",
+    "template": "ImageTextPage",
     "content": {
-      "text": "But round the end of a cucumber frame, whom should he meet but Mr. McGregor!\n\nMr. McGregor was on his hands and knees planting out young cabbages, but he jumped up and ran after Peter, waving a rake and calling out, 'Stop thief!'"
+      "image": "https://picsum.photos/seed/garden2/400/300",
+      "title": "Caught!",
+      "text": "But round the end of a cucumber frame, whom should he meet but Mr. McGregor!\n\nMr. McGregor jumped up and ran after Peter, waving a rake and calling out, 'Stop thief!'"
     }
   },
   {
@@ -67,10 +75,12 @@
   },
   {
     "pageNumber": 8,
-    "type": "text",
-    "template": "TextPage",
+    "type": "image-text",
+    "template": "ImageTextPage",
     "content": {
-      "text": "After losing them, he ran on four legs and went faster, so that I think he might have got away altogether if he had not unfortunately run into a gooseberry net, and got caught by the large buttons on his jacket."
+      "image": "https://picsum.photos/seed/chase1/400/300",
+      "title": "The Chase",
+      "text": "After losing them, he ran on four legs and went faster, so that I think he might have got away altogether if he had not unfortunately run into a gooseberry net."
     }
   },
   {
@@ -86,15 +96,17 @@
     "type": "text",
     "template": "TextPage",
     "content": {
-      "text": "Mr. McGregor came up with a sieve, which he intended to pop upon the top of Peter; but Peter wriggled out just in time, leaving his jacket behind him. And rushed into the tool-shed, and jumped into a can. It would have been a beautiful thing to hide in, if it had not had so much water in it."
+      "text": "Mr. McGregor came up with a sieve, which he intended to pop upon the top of Peter; but Peter wriggled out just in time, leaving his jacket behind him. And rushed into the tool-shed, and jumped into a can."
     }
   },
   {
     "pageNumber": 11,
-    "type": "text",
-    "template": "TextPage",
+    "type": "image-text",
+    "template": "ImageTextPage",
     "content": {
-      "text": "Peter got down very quietly off the wheelbarrow, and started running as fast as he could go, along a straight walk behind some black-currant bushes.\n\nMr. McGregor caught sight of him at the corner, but Peter did not care. He slipped underneath the gate, and was safe at last in the wood outside the garden.\n\nThe End"
+      "image": "https://picsum.photos/seed/safe1/400/300",
+      "title": "Safe at Last",
+      "text": "Peter slipped underneath the gate, and was safe at last in the wood outside the garden.\n\nThe End"
     }
   }
 ]
