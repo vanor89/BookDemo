@@ -37,3 +37,62 @@ export function useIsTablet(): boolean {
 export function useIsDesktop(): boolean {
   return useMediaQuery("(min-width: 1024px)");
 }
+
+/**
+ * Determines if the book should show single page view based on:
+ * - Screen width (mobile always single page)
+ * - Aspect ratio (portrait orientation prefers single page)
+ * - Available space for comfortable two-page display
+ */
+export function useSinglePageView(): boolean {
+  const [isSinglePage, setIsSinglePage] = useState(true);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const checkSinglePageView = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const aspectRatio = width / height;
+
+      // Mobile: always single page (under 768px width)
+      if (width < 768) {
+        setIsSinglePage(true);
+        return;
+      }
+
+      // Portrait or near-square orientation: single page
+      // (when height is greater than or close to width)
+      if (aspectRatio < 1.3) {
+        setIsSinglePage(true);
+        return;
+      }
+
+      // Tablet in landscape but narrow: single page
+      if (width < 1100) {
+        setIsSinglePage(true);
+        return;
+      }
+
+      // Wide landscape screens: two pages
+      setIsSinglePage(false);
+    };
+
+    // Run immediately
+    checkSinglePageView();
+
+    // Listen for resize
+    window.addEventListener("resize", checkSinglePageView);
+
+    // Also listen for orientation change on mobile
+    window.addEventListener("orientationchange", checkSinglePageView);
+
+    return () => {
+      window.removeEventListener("resize", checkSinglePageView);
+      window.removeEventListener("orientationchange", checkSinglePageView);
+    };
+  }, []);
+
+  return isSinglePage;
+}
+

@@ -17,6 +17,7 @@ export function BookProvider({ children, bookConfig, initialPage = 0 }: BookProv
   const [isFlippingEnabled, setFlippingEnabled] = useState(true);
   const [interactionMode, setInteractionMode] = useState<"reading" | "interactive">("reading");
   const [orientation, setOrientation] = useState<"portrait" | "landscape">("portrait");
+  const [pagesPerView, setPagesPerView] = useState<1 | 2>(1);
 
   const totalPages = bookConfig?.totalPages ?? 0;
 
@@ -43,16 +44,18 @@ export function BookProvider({ children, bookConfig, initialPage = 0 }: BookProv
   );
 
   const nextPage = useCallback(() => {
+    const increment = pagesPerView;
     if (currentPage < totalPages - 1) {
-      setCurrentPage((prev) => prev + 1);
+      setCurrentPage((prev) => Math.min(prev + increment, totalPages - 1));
     }
-  }, [currentPage, totalPages]);
+  }, [currentPage, totalPages, pagesPerView]);
 
   const previousPage = useCallback(() => {
+    const decrement = pagesPerView;
     if (currentPage > 0) {
-      setCurrentPage((prev) => prev - 1);
+      setCurrentPage((prev) => Math.max(prev - decrement, 0));
     }
-  }, [currentPage]);
+  }, [currentPage, pagesPerView]);
 
   const toggleInteractionMode = useCallback(() => {
     setInteractionMode((prev) => (prev === "reading" ? "interactive" : "reading"));
@@ -65,12 +68,14 @@ export function BookProvider({ children, bookConfig, initialPage = 0 }: BookProv
     isFlippingEnabled,
     interactionMode,
     orientation,
+    pagesPerView,
     bookConfig,
     goToPage,
     nextPage,
     previousPage,
     toggleInteractionMode,
     setFlippingEnabled,
+    setPagesPerView,
   };
 
   return <BookContext.Provider value={value}>{children}</BookContext.Provider>;

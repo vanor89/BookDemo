@@ -21,6 +21,7 @@ export interface BookState {
   isFlippingEnabled: boolean;
   interactionMode: "reading" | "interactive";
   orientation: "portrait" | "landscape";
+  pagesPerView: 1 | 2;
 }
 
 export interface BookContextType extends BookState {
@@ -30,4 +31,5 @@ export interface BookContextType extends BookState {
   previousPage: () => void;
   toggleInteractionMode: () => void;
   setFlippingEnabled: (enabled: boolean) => void;
+  setPagesPerView: (pages: 1 | 2) => void;
 }

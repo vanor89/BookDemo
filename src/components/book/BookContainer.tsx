@@ -3,7 +3,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import HTMLFlipBook from "react-pageflip";
 import { useBook } from "@/context/BookContext";
-import { useIsMobile } from "@/hooks/useMediaQuery";
 import { BOOK_CONFIG } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -13,48 +12,90 @@ interface BookContainerProps {
 }
 
 export default function BookContainer({ children, className }: BookContainerProps) {
-  const { currentPage, goToPage, isFlippingEnabled, orientation } = useBook();
+  const { currentPage, goToPage, isFlippingEnabled, setPagesPerView } = useBook();
   const bookRef = useRef<any>(null);
-  const isMobile = useIsMobile();
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 400, height: 600 });
+  const [isSinglePage, setIsSinglePage] = useState(true);
+  const [isClient, setIsClient] = useState(false);
 
-  // Calculate responsive dimensions
+  const childArray = React.Children.toArray(children);
+
+  // Set client flag on mount
   useEffect(() => {
-    const calculateDimensions = () => {
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
+    setIsClient(true);
+  }, []);
 
-      let width = windowWidth * 0.8;
-      let height = windowHeight * 0.8;
+  // Update pagesPerView in context when isSinglePage changes
+  useEffect(() => {
+    setPagesPerView(isSinglePage ? 1 : 2);
+  }, [isSinglePage, setPagesPerView]);
 
-      // Clamp to min/max values
-      width = Math.min(Math.max(width, BOOK_CONFIG.minWidth), BOOK_CONFIG.maxWidth);
-      height = Math.min(Math.max(height, BOOK_CONFIG.minHeight), BOOK_CONFIG.maxHeight);
+  // Calculate dimensions and determine single/double page mode
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-      // Mobile: use single page, smaller size
-      if (isMobile) {
-        width = Math.min(windowWidth * 0.95, 500);
-        height = windowHeight * 0.7;
+    const calculate = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const aspectRatio = width / height;
+
+      // Determine single vs double page
+      const shouldBeSinglePage = width < 1100 || aspectRatio < 1.3;
+      setIsSinglePage(shouldBeSinglePage);
+
+      const availableWidth = width * 0.9;
+      const availableHeight = height * 0.7;
+      const pageAspectRatio = 0.7;
+
+      let pageWidth: number;
+      let pageHeight: number;
+
+      if (shouldBeSinglePage) {
+        pageHeight = availableHeight * 0.95;
+        pageWidth = pageHeight * pageAspectRatio;
+
+        if (pageWidth > availableWidth * 0.9) {
+          pageWidth = availableWidth * 0.9;
+          pageHeight = pageWidth / pageAspectRatio;
+        }
+      } else {
+        pageHeight = availableHeight * 0.95;
+        const totalWidth = pageHeight * pageAspectRatio * 2;
+
+        if (totalWidth > availableWidth * 0.95) {
+          pageWidth = (availableWidth * 0.95) / 2;
+          pageHeight = pageWidth / pageAspectRatio;
+        } else {
+          pageWidth = pageHeight * pageAspectRatio;
+        }
       }
 
-      setDimensions({ width: Math.floor(width), height: Math.floor(height) });
+      pageWidth = Math.max(BOOK_CONFIG.minWidth, Math.min(pageWidth, BOOK_CONFIG.maxWidth));
+      pageHeight = Math.max(BOOK_CONFIG.minHeight, Math.min(pageHeight, BOOK_CONFIG.maxHeight));
+
+      setDimensions({
+        width: Math.floor(pageWidth),
+        height: Math.floor(pageHeight)
+      });
     };
 
-    calculateDimensions();
-    window.addEventListener("resize", calculateDimensions);
+    calculate();
+    window.addEventListener("resize", calculate);
+    return () => window.removeEventListener("resize", calculate);
+  }, []);
 
-    return () => window.removeEventListener("resize", calculateDimensions);
-  }, [isMobile]);
-
-  // Sync page changes from context to book
+  // Sync page changes from context to book (only for double-page mode)
   useEffect(() => {
-    if (bookRef.current && bookRef.current.pageFlip) {
-      const currentBookPage = bookRef.current.pageFlip().getCurrentPageIndex();
-      if (currentBookPage !== currentPage) {
-        bookRef.current.pageFlip().flip(currentPage);
+    if (!isSinglePage && bookRef.current?.pageFlip) {
+      const pageFlip = bookRef.current.pageFlip();
+      if (pageFlip && typeof pageFlip.getCurrentPageIndex === 'function') {
+        const currentBookPage = pageFlip.getCurrentPageIndex();
+        if (currentBookPage !== currentPage) {
+          pageFlip.flip(currentPage);
+        }
       }
     }
-  }, [currentPage]);
+  }, [currentPage, isSinglePage]);
 
   const handleFlip = (e: any) => {
     const newPage = e.data;
@@ -63,9 +104,9 @@ export default function BookContainer({ children, className }: BookContainerProp
     }
   };
 
-  if (dimensions.width === 0 || dimensions.height === 0) {
+  if (!isClient) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center w-full h-full">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-book-accent mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading book...</p>
@@ -74,22 +115,66 @@ export default function BookContainer({ children, className }: BookContainerProp
     );
   }
 
+  // Single page mode: simple slide-based navigation
+  if (isSinglePage) {
+    return (
+      <div
+        className={cn(
+          "book-container flex items-center justify-center w-full h-full",
+          className
+        )}
+      >
+        <div
+          className="relative overflow-hidden rounded-lg shadow-2xl bg-white"
+          style={{
+            width: dimensions.width,
+            height: dimensions.height,
+          }}
+        >
+          {childArray.map((child, index) => (
+            <div
+              key={index}
+              className={cn(
+                "absolute inset-0 transition-all duration-500 ease-in-out",
+                index === currentPage
+                  ? "opacity-100 translate-x-0"
+                  : index < currentPage
+                  ? "opacity-0 -translate-x-full"
+                  : "opacity-0 translate-x-full"
+              )}
+            >
+              {child}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Double page mode: use HTMLFlipBook
   return (
-    <div className={cn("book-container flex items-center justify-center", className)}>
+    <div
+      className={cn(
+        "book-container flex items-center justify-center w-full h-full",
+        className
+      )}
+    >
       <HTMLFlipBook
+        key={`book-${dimensions.width}-${dimensions.height}`}
         ref={bookRef}
-        width={isMobile ? dimensions.width : dimensions.width / 2}
+        width={dimensions.width}
         height={dimensions.height}
-        size={isMobile ? "fixed" : "stretch"}
+        size="fixed"
         minWidth={BOOK_CONFIG.minWidth}
         maxWidth={BOOK_CONFIG.maxWidth}
         minHeight={BOOK_CONFIG.minHeight}
         maxHeight={BOOK_CONFIG.maxHeight}
         drawShadow={true}
         flippingTime={BOOK_CONFIG.flippingTime}
-        usePortrait={isMobile}
+        usePortrait={false}
+        startPage={0}
         startZIndex={0}
-        autoSize={true}
+        autoSize={false}
         maxShadowOpacity={BOOK_CONFIG.maxShadowOpacity}
         showCover={true}
         mobileScrollSupport={true}
